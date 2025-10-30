@@ -1,7 +1,8 @@
 # A TicTacToe game
 There's a list of size 9 that can store " ", "O" or "X".  
-At first, the user choose how many players will play.
-He/she can choose between 1p and 2p.
+At first, the user choose how many players will play.  
+Then he/she chooses which symbol he wants to play with.  
+He/she can choose between 1p and 2p.  
 The empty list is displayed on three lines in the console.  
 The players play one at a time.  
 They have to choose an **empty** cell containing " " from 0 to 8.  
@@ -10,22 +11,35 @@ for on of the player O or X.
 [0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[6,4,2]  
 Then the list is displayed updated.  
 If one of the player is victorious, a victory message is displayed in the console.  
-If no player is victorious, a message ask the players to continue.  
+If no player is victorious, the game continues.  
 If there's not empty cell anymore and no victory sequence is detected  
 then the game is draw.  
+After a draw or a victory, the user is asked if he wants to play again.  
+When playing in single user mode, an ai function plays instead of the second player.  
+Its intelligence grow game after game and its taunts evolves depending on its strength.  
 
 # Variables:
    game: bool (Define if a game is on)  
+   play_again: bool (Define if the whole game sequence is on or not)  
+   game_count: int (Count games played)  
+   p1_win_count: int (Count Player 1 victories)  
+   p2_win_count: int (Count Player 2 victories)  
+   single_player: bool (Define if the game is in single or multiplayer mode)  
    player_1: bool (Define which player has to play)  
    game_state: string (Define who won or if it's draw)  
    board: list[string] (Store game information, occupied and free cells)  
    o_indexes: list[string] (Store player 1 occupied cells indexes)  
    x_indexes: list[string] (Store player 2 occupied cells indexes)  
+   ai_taunts: tuple(string) (Store all standard ai taunts)  
+   ai_taunts_lvl_1: tuple(string) (Store all ai taunts displayed when force == 1)  
+   ai_taunts_lvl_2: tuple(string) (Store all ai taunts displayed when force == 2)  
+   ai_taunts_lvl_3: tuple(string) (Store all ai taunts displayed when force == 3)  
 
 # Functions:
    display_board(board): Display the game matrix in user's console  
    check_board(board) -> String: Check if a victorious sequence is detected in the game matrix  
-                                             and return a string. "The 1st player won the game!"  
-                                                                  "The 2nd player won the game!"  
-                                                                  "Draw!"  
-   ia(board,signe,force): Return a board index depending on its sign and strength
+                                             and return a string. "O"  
+                                                                  "X"  
+                                                                  "NO_WINNER_YET"  
+                                                                  "DRAW"  
+   ia(board,signe,force): Return a board index depending on its sign and strength  
