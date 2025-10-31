@@ -231,7 +231,7 @@ while play_again:
         no_input = ["n","no","non","nope","no way","hell no","hell no!"]
         if user_input.lower() in yes_input:
             game = True
-            play_gain = True
+            play_again = True
             valid_user_input = True
             board = [" "," "," "," "," "," "," "," "," "] # Board reset
             game_state = "NO_WINNER_YET" # Game state reset
