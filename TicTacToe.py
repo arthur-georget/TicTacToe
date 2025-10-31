@@ -1,6 +1,30 @@
 import random
 import time
 
+##############################################################################
+# Variables init
+
+game = True
+play_again = True
+game_count = 0
+p1_win_count = 0
+p2_win_count = 0 
+board = [" "," "," "," "," "," "," "," "," "]
+single_player = True
+player_1 = True # player_1 True is 1st player, player_1 False is 2nd player.
+ai_taunts = ("Hmmmm you weak pathetic fool!","You're too slow!",
+             "Nice try!","You can't beat me!","Are you sure about that?",
+             "What do you say about that?","Too easy!")
+ai_taunts_lvl_1 = ("I learnt from my mistakes!","From now I'll focus a little bit more.",
+                   "I'm not a noob anymore.","I'm starting to understand!")
+ai_taunts_lvl_2 = ("Fear the TicTacToe expert!","I'm still getting better and better!",
+                   "I could give you several tips if you want.","hehe!")
+ai_taunts_lvl_3 = ("I won't lose anymore.","You should give up!",
+                   "TicTacToe has no secrets for me.","I'm a TicTacToe master!")
+
+##############################################################################
+# Functions
+
 def display_board(board):
     ''' This function displays the board in user's console '''
     for i in range(3):
@@ -39,6 +63,39 @@ def check_board(board):
         return "DRAW"
     else:
         return "NO_WINNER_YET"
+
+def check_game(game,game_state,p1_win_count,p2_win_count):
+    '''End the game if check_board return anything else than "NO_WINNER_YET" and increment''' 
+    if game_state != ("NO_WINNER_YET"):
+        game = False
+        match game_state:
+            case "DRAW":
+                print("It's a draw! Well done you two.")
+            case "O":
+                print("The O player won the game!")
+                if player_1_symbol == "O":
+                    print("Well done player 1.")
+                    p1_win_count +=1
+                    if single_player:
+                        print("AI: Nooooooooooo!")
+                else:
+                    print("Well done player 2.")
+                    p2_win_count +=1
+                    if single_player:
+                        print("AI: Hehe I knew I could win!")
+            case "X":
+                print("The X player won the game!")
+                if player_1_symbol == "X":
+                    print("Well done player 1.")
+                    p1_win_count +=1
+                    if single_player:
+                        print("AI: Nooooooooooo!")
+                else:
+                    print("Well done player 2.")
+                    p2_win_count +=1
+                    if single_player:
+                        print("AI: Hehe I knew I could win!")
+    return game,p1_win_count,p2_win_count
 
 def ia(board,signe,force):
     ''' This function return a board index depending on the board state, the symbol and force provided '''   
@@ -106,124 +163,82 @@ def ia(board,signe,force):
                 return index
     return random.choice(free_indexes) # If none of the previous conditions were met, play a random move
 
-###############################################################################################
-# Variables init
-game = True
-play_again = True
-game_count = 0
-p1_win_count = 0
-p2_win_count = 0 
-board = [" "," "," "," "," "," "," "," "," "]
-single_player = True
-player_1 = True # player_1 True is 1st player, player_1 False is 2nd player.
-valid_user_input = False
-valid_user_symbol = False
-ai_taunts = ("Hmmmm you weak pathetic fool!","You're too slow!",
-             "Nice try!","You can't beat me!","Are you sure about that?",
-             "What do you say about that?","Too easy!")
-ai_taunts_lvl_1 = ("I learnt from my mistakes!","From now I'll focus a little bit more.","I'm not a noob anymore.","I'm starting to understand!")
-ai_taunts_lvl_2 = ("Fear the TicTacToe expert!","I'm still getting better and better!","I could give you several tips if you want.","hehe!")
-ai_taunts_lvl_3 = ("I won't lose anymore.","You should give up!","TicTacToe has no secrets for me.","I'm a TicTacToe master!")
-###############################################################################################
-
-print("Welcome in TicTacToe")
-
-print("How many players are you?")
-while not valid_user_input:
-    user_input = input("Please choose (1p/2p): ")
-    single_input = ["1","1p","1 player","1player"]
-    multi_input = ["2","2p","2 player","2player","2 players","2players"]
-    if user_input.lower() in single_input:
-        single_player = True
-        valid_user_input = True
-    elif user_input.lower() in multi_input:
-        single_player = False
-        valid_user_input = True
-    else:
-        print(f"{user_input} is different from 1p and 2p, you should type 1p or 2p. ")
-
-while not valid_user_symbol:
-    user_input = input("Player 1, with which symbol do you want to play? (O/X): ")
-    if user_input.lower() == "o":
-        player_1_symbol = "O"
-        player_2_symbol = "X"
-        valid_user_symbol = True
-    elif user_input.lower() == "x":
-        player_1_symbol = "X"
-        player_2_symbol = "O"
-        valid_user_symbol = True
-    else:
-        print(f"{user_input} is not a valid symbol, you should type O or X.")
-
-while play_again:
-
-    # Game loop, that runs as long as there's something left to play
-    while game:
-        display_board(board) # Display the board in the console
-        # Ask players to select a cell to play. Verify the input or ask again if cell already occupied or not an int or out of range.
-        if player_1:
-            selected_cell = input("Player 1, please select a cell from 0 to 8: ")
-            while not selected_cell.isdigit() or int(selected_cell) not in range(0,9) or board[int(selected_cell)] != " ":  
-                selected_cell = input(f"{selected_cell} is not in range or already occupied. Please select another one between 0 and 8: ")
-            board[int(selected_cell)] = player_1_symbol # Update board with corresponding item.
-        elif single_player:
-            print("AI, please select a cell from 0 to 8: ")
-            time.sleep(2)
-            print(f"AI: {random.choice(ai_taunts)}")
-            time.sleep(1)
-            force = game_count // 2
-            match force:
-                case 1:
-                    print(f"AI: {random.choice(ai_taunts_lvl_1)}")
-                    time.sleep(1)
-                case 2:
-                    print(f"AI: {random.choice(ai_taunts_lvl_2)}")
-                    time.sleep(1)
-                case 3:
-                    print(f"AI: {random.choice(ai_taunts_lvl_3)}")
-                    time.sleep(1)
-            board[ia(board,player_2_symbol,force)] = player_2_symbol
-        else:
-            selected_cell = input("Player 2, please select a cell from 0 to 8: ")
-            while not selected_cell.isdigit() or int(selected_cell) not in range(0,9) or board[int(selected_cell)] != " ":  
-                selected_cell = input(f"{selected_cell} is not in range or already occupied. Please select another one between 0 and 8: ")
-            board[int(selected_cell)] = player_2_symbol
-        player_1 = not player_1 # Switch player
-        game_state = check_board(board) # Call check_board(board) to verify if someone won or not.
-        # End the game if check_board return anything else than "Play again!" and increment 
-        if game_state != ("NO_WINNER_YET"):
-            game = False
-            match game_state:
-                case "DRAW":
-                    print("It's a draw! Well done you two.")
-                case "O":
-                    print("The O player won the game!")
-                    if player_1_symbol == "O":
-                        print("Well done player 1.")
-                        p1_win_count +=1
-                        if single_player:
-                            print("AI: Nooooooooooo!")
-                    else:
-                        print("Well done player 2.")
-                        p2_win_count +=1
-                        if single_player:
-                            print("AI: Hehe I knew I could win!")
-                case "X":
-                    print("The X player won the game!")
-                    if player_1_symbol == "X":
-                        print("Well done player 1.")
-                        p1_win_count +=1
-                        if single_player:
-                            print("AI: Nooooooooooo!")
-                    else:
-                        print("Well done player 2.")
-                        p2_win_count +=1
-                        if single_player:
-                            print("AI: Hehe I knew I could win!")
-
-    display_board(board)
-    game_count += 1
+def ask_game_mode():
+    ''' This function ask the user if he/she wants to play in single or multiplayer mode, 
+        return single_player boolean '''
+    valid_user_input = False
     
+    print("How many players are you?")
+    while not valid_user_input:
+        user_input = input("Please choose (1p/2p): ")
+        single_input = ["1","1p","1 player","1player"]
+        multi_input = ["2","2p","2 player","2player","2 players","2players"]
+        if user_input.lower() in single_input:
+            single_player = True
+            valid_user_input = True
+        elif user_input.lower() in multi_input:
+            single_player = False
+            valid_user_input = True
+        else:
+            print(f"{user_input} is different from 1p and 2p, you should type 1p or 2p. ")
+    return single_player
+
+def ask_symbol():
+    '''This function ask the user which symbol he wants to play.
+       Return player_1_symbol and player_2_symbol'''
+    valid_user_symbol = False
+    while not valid_user_symbol:
+        user_input = input("Player 1, with which symbol do you want to play? (O/X): ")
+        if user_input.lower() == "o":
+            player_1_symbol = "O"
+            player_2_symbol = "X"
+            valid_user_symbol = True
+        elif user_input.lower() == "x":
+            player_1_symbol = "X"
+            player_2_symbol = "O"
+            valid_user_symbol = True
+        else:
+            print(f"{user_input} is not a valid symbol, you should type O or X.")
+    return player_1_symbol,player_2_symbol
+
+def ask_move(board,player_1,single_player,player_1_symbol,player_2_symbol):
+    '''Ask players to select a cell to play. 
+       Verify the input or ask again if cell already occupied 
+       or not an int or out of range.'''
+    if player_1:
+        selected_cell = input("Player 1, please select a cell from 0 to 8: ")
+        while not selected_cell.isdigit() or int(selected_cell) not in range(0,9) or board[int(selected_cell)] != " ":  
+            selected_cell = input(f"{selected_cell} is not in range or already occupied. Please select another one between 0 and 8: ")
+        board[int(selected_cell)] = player_1_symbol # Update board with corresponding item.
+    elif single_player:
+        print("AI, please select a cell from 0 to 8: ")
+        time.sleep(2)
+        print(f"AI: {random.choice(ai_taunts)}")
+        time.sleep(1)
+        force = game_count // 2
+        match force:
+            case 1:
+                print(f"AI: {random.choice(ai_taunts_lvl_1)}")
+                time.sleep(1)
+            case 2:
+                print(f"AI: {random.choice(ai_taunts_lvl_2)}")
+                time.sleep(1)
+            case 3:
+                print(f"AI: {random.choice(ai_taunts_lvl_3)}")
+                time.sleep(1)
+        board[ia(board,player_2_symbol,force)] = player_2_symbol
+    else:
+        selected_cell = input("Player 2, please select a cell from 0 to 8: ")
+        while not selected_cell.isdigit() or int(selected_cell) not in range(0,9) or board[int(selected_cell)] != " ":  
+            selected_cell = input(f"{selected_cell} is not in range or already occupied. Please select another one between 0 and 8: ")
+        board[int(selected_cell)] = player_2_symbol
+    
+    player_1 = not player_1 # Switch player
+    
+    return board,player_1
+
+def ask_continue():
+    '''Function to ask user if he wants to continue and reset all games variables.'''
     valid_user_input = False
     while not valid_user_input:
         user_input = input("Do you want to play again? (yes/no): ")
@@ -233,12 +248,36 @@ while play_again:
             game = True
             play_again = True
             valid_user_input = True
-            board = [" "," "," "," "," "," "," "," "," "] # Board reset
-            game_state = "NO_WINNER_YET" # Game state reset
         elif user_input.lower() in no_input:
+            game = False
             play_again = False
             valid_user_input = True
         else:
             print(f"{user_input} is different from yes or no, you should type yes or no.")
+    board = [" "," "," "," "," "," "," "," "," "] # Board reset
+    game_state = "NO_WINNER_YET" # Game state reset
+    return game,play_again,board,game_state
+
+##############################################################################
+# Main
+
+print("Welcome in TicTacToe")
+
+single_player = ask_game_mode()
+player_1_symbol,player_2_symbol = ask_symbol()
+
+while play_again:
+
+    # Game loop, that runs as long as there's something left to play
+    while game:
+        display_board(board) # Display the board in the console
+        board,player_1 = ask_move(board,player_1,single_player,player_1_symbol,player_2_symbol) # Ask player 1, player 2 or AI the move they want to play
+        game_state = check_board(board) # Check the board to know if someone won or not.
+        game,p1_win_count,p2_win_count = check_game(game,game_state,p1_win_count,p2_win_count) # Check game_state to end the game if necessary and congrats the winners.
+
+    display_board(board)
+    game_count += 1
+    
+    game,play_again,board,game_state = ask_continue() # Ask user if he wants to continue, and resets games variables
 
 print(f"Thank you for playing TicTacToe, here's the final score p1: {p1_win_count} p2: {p2_win_count}")
